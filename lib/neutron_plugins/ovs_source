@@ -128,7 +128,8 @@ function action_openvswitch {
 
 # start_new_ovs() - removes old ovs database, creates a new one and starts ovs
 function start_new_ovs {
-    sudo rm -f /etc/openvswitch/conf.db /etc/openvswitch/.conf.db~lock~
+    # DB path must match the compiled --prefix=/usr/local sysconfdir
+    sudo rm -f /usr/local/etc/openvswitch/conf.db /usr/local/etc/openvswitch/.conf.db~lock~
     sudo /usr/local/share/openvswitch/scripts/ovs-ctl start
 }
 

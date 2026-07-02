@@ -68,9 +68,15 @@ function _neutron_ovs_base_install_ubuntu_dkms {
 function _neutron_ovs_base_install_agent_packages {
     if [ "$Q_BUILD_OVS_FROM_GIT" == "True" ]; then
         remove_ovs_packages
-        compile_ovs /usr/local /var
+        compile_ovs /usr/local
         load_conntrack_gre_module
-        start_new_ovs
+        # When OVN is the backend, ovn_agent:_start_ovs handles OVS
+        # lifecycle with its own DB and rundir. Starting OVS here would
+        # leave an orphaned ovs-vswitchd holding the kernel datapath,
+        # preventing the OVN-managed instance from creating bridges.
+        if ! is_service_enabled ovn-controller ovn-northd; then
+            start_new_ovs
+        fi
     else
         # Install deps
         install_package $(get_packages "openvswitch")
