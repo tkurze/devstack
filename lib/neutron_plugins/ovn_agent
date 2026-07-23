@@ -65,9 +65,6 @@ OVN_L3_SCHEDULER=${OVN_L3_SCHEDULER:-leastloaded}
 # Open vSwitch service.
 OVN_UUID=${OVN_UUID:-}
 
-# Whether or not to build the openvswitch kernel module from ovs.  This is required
-# unless the distro kernel includes ovs+conntrack support.
-OVN_BUILD_MODULES=$(trueorfalse False OVN_BUILD_MODULES)
 OVN_BUILD_FROM_SOURCE=$(trueorfalse False OVN_BUILD_FROM_SOURCE)
 if [[ "$OVN_BUILD_FROM_SOURCE" == "True" ]]; then
     Q_BUILD_OVS_FROM_GIT=True
@@ -427,7 +424,7 @@ function install_ovn {
         remove_ovs_packages
         sudo rm -f $OVS_RUNDIR/*
 
-        compile_ovs $OVN_BUILD_MODULES
+        compile_ovs
         if use_new_ovn_repository; then
             compile_ovn
         fi
